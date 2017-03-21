@@ -11,29 +11,42 @@ export default class DepartmentCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: 1
+      selected: 1,
+      label: "Department",
+      items: [
+        { value: 1, label: "Department of Education" },
+        { value: 2, label: "Department of Agriculture" }
+      ]
     }
   }
 
-  handleChange = (event, index, value) => this.setState({value});
+  handleChange = (event, index, selected) => this.setState({selected});
 
-  render() {
+  saveData = () => {
+    this.props.dataStore({department: this.state.label});
+    this.props.goNext();
+  }
+
+  render = () => {
     return (
-      <Card>
+      <Card style={{height: '520px', position: 'relative'}}>
         <Toolbar>
           <ToolbarGroup>
-              <ToolbarTitle text="Scheme Details" />
+              <ToolbarTitle text={this.props.heading} />
           </ToolbarGroup>
         </Toolbar>
         <CardText>
           <SelectDropdowns
-            label="Department"
             change={this.handleChange}
-            value={this.state.value}/>
+            value={this.state.selected}
+            label={this.state.label}
+            items={this.state.items}/>
         </CardText>
-        <CardActions>
-          <RaisedButton label="Next" onClick={this.props.goNext}/>
-        </CardActions>
+        <div style={{position: 'absolute', bottom: '5px', right: '5px'}}>
+          <CardActions>
+            <RaisedButton primary={true} label="Next" onClick={this.saveData}/>
+          </CardActions>
+        </div>
       </Card>
     );
   }

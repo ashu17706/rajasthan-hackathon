@@ -11,30 +11,26 @@ import ReviewCard from './ReviewCard';
 import CriteriaCard from './CriteriaCard';
 import NotificationCard from './NotificationCard';
 import DepartmentCard from './DepartmentCard';
-/**
- * Horizontal steppers are ideal when the contents of one step depend on an earlier step.
- * Avoid using long step names in horizontal steppers.
- *
- * Linear steppers require users to complete one step in order to move on to the next.
- */
+
 class HorizontalLinearStepper extends React.Component {
 
   state = {
     finished: false,
     stepIndex: 0,
+    form_data: {}
   };
 
   handleNext = () => {
-    console.log('log');
-    const {stepIndex} = this.state;
+    const stepIndex = this.state.stepIndex < 4 ? this.state.stepIndex + 1 : 4;
+    console.log(stepIndex);
     this.setState({
-      stepIndex: stepIndex + 1,
-      finished: stepIndex >= 2,
+      stepIndex:  stepIndex,
+      finished: stepIndex >= 4
     });
   };
 
   handlePrev = () => {
-    const {stepIndex} = this.state;
+    const { stepIndex } = this.state;
     if (stepIndex > 0) {
       this.setState({stepIndex: stepIndex - 1});
     }
@@ -43,56 +39,90 @@ class HorizontalLinearStepper extends React.Component {
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return 'Select campaign settings...';
+        return 'Select Department';
       case 1:
-        return 'What is an ad group anyways?';
+        return 'Scheme Details';
       case 2:
-        return 'This is the bit I really care about!';
-      default:
-        return 'You\'re a long way from home sonny jim!';
+        return 'Criteria';
+      case 3:
+        return 'Notification Settings';
+      case 4:
+        return 'Review & Schedule'
     }
+  }
+  storeData = (data) => {
+    let oldFormData = this.state.form_data;
+    let newFormData = data;
+    newFormData = Object.assign(oldFormData, newFormData);
+    this.setState({newFormData});
+    console.log(this.state);
   }
 
   getStateCard = (index) => {
     switch(index) {
       case 0:
-        return <DepartmentCard goNext={this.handleNext} goBack={this.handlePrev}/>;
+        return <DepartmentCard
+                goNext={this.handleNext}
+                goBack={this.handlePrev}
+                heading={this.getStepContent(this.state.stepIndex)}
+                dataStore={this.storeData}
+              />;
       case 1:
-        return <SchemeDetailsCard goNext={this.handleNext} goBack={this.handlePrev}/>;
+        return <SchemeDetailsCard
+                goNext={this.handleNext}
+                goBack={this.handlePrev}
+                heading={this.getStepContent(this.state.stepIndex)}
+                dataStore={this.storeData}
+              />;
       case 2:
-        return <CriteriaCard goNext={this.handleNext} goBack={this.handlePrev}/>;
+        return <CriteriaCard
+                goNext={this.handleNext}
+                goBack={this.handlePrev}
+                heading={this.getStepContent(this.state.stepIndex)}
+              />;
       case 3:
-        return <NotificationCard goNext={this.handleNext} goBack={this.handlePrev}/>;
+        return <NotificationCard
+                goNext={this.handleNext}
+                goBack={this.handlePrev}
+                heading={this.getStepContent(this.state.stepIndex)}
+              />;
       case 4:
-        return <ReviewCard goNext={this.handleNext} goBack={this.handlePrev}/>;
-
-
+        return <ReviewCard
+                goNext={this.handleNext}
+                goBack={this.handlePrev}
+                heading={this.getStepContent(this.state.stepIndex)}
+                schemeName="Scheme One"
+                notificationDetails="12 AUG 2012 8:21PM"
+                message="Govt. of Rajasthan "
+                families={this.props.families}
+              />;
     }
   }
   render = () => {
+    console.log("Render", this.props.families);
     const {finished, stepIndex} = this.state;
     const contentStyle = {margin: '0 16px'};
 
     return (
-      <div style={{width: '100%', maxWidth: 700, margin: 'auto'}}>
+      <div style={{width: '80%', margin: 'auto'}}>
         <Stepper activeStep={stepIndex}>
           <Step>
-            <StepLabel>Select Department</StepLabel>
+            <StepLabel>Department</StepLabel>
           </Step>
           <Step>
-            <StepLabel>New Scheme Details</StepLabel>
+            <StepLabel>Scheme Details</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Select Criteria</StepLabel>
+            <StepLabel>Criteria</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Schedule Notification</StepLabel>
+            <StepLabel>Notification Settings</StepLabel>
           </Step>
           <Step>
             <StepLabel>Review & Schedule</StepLabel>
           </Step>
         </Stepper>
-        <div style={{height: '500px'}}>
+        <div style={{height: '500px', minHeight: '500px', padding: '10px'}}>
           {this.getStateCard(this.state.stepIndex)}
         </div>
       </div>

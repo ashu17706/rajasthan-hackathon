@@ -8,6 +8,7 @@ import NotificationCard from './NotificationCard';
 import HorizontalLinearStepper from './HorizontalLinearStepper';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 require('./App.css');
+let families = [];
 
 export default class App extends React.Component {
   constructor(props) {
@@ -15,15 +16,21 @@ export default class App extends React.Component {
     injectTapEventPlugin();
   }
 
+  componentWillMount() {
+    fetch('http://139.59.33.29:8000/api/info/')
+      .then(data => data.json())
+      .then(data => {
+        families.push(...data);
+        console.log(families);
+    });
+  }
   render() {
+    console.log(this.props.families);
     return (
       <MuiThemeProvider>
         <div>
-          <AppBar title="Bhamashah Scheme Notification Schedular" />
-          {/* <SchemeDetailsCard />
-          <CriteriaCard />
-          <NotificationCard /> */}
-          <HorizontalLinearStepper />
+          <AppBar title="Bhamashah Scheme Notification Scheduler" />
+          <HorizontalLinearStepper families={families}/>
         </div>
       </MuiThemeProvider>
     );

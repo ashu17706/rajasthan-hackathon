@@ -8,6 +8,7 @@ export default class SelectDropdown extends React.Component {
     super(props);
   }
 
+
   render() {
     return (
       <SelectField
@@ -16,10 +17,9 @@ export default class SelectDropdown extends React.Component {
         onChange={this.props.change}
         autoWidth={true}
       >
-        <MenuItem value={1} primaryText="Department of Agriculture" />
-        <MenuItem value={2} primaryText="Department of Education" />
-        <MenuItem value={3} primaryText="Department of Health and Family Welfare" />
-        <MenuItem value={4} primaryText="Department of Water and Sanitation" />
+        {this.props.items.map(item => (
+          <MenuItem value={item.value} primaryText={item.label} key={item.value}/>
+        ))}
       </SelectField>
     );
   }
